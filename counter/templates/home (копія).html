@@ -1,0 +1,217 @@
+{% load static %}
+
+<!DOCTYPE htmll>
+<html>
+<head>
+	<title>Расчет стоимости заказа</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+</head>
+<body>
+<div class="container-fluid bg-secondary pb-2 pt-3">
+  <div class="row">
+    <div class="col-2">
+      <img src="{% static 'img/food.png' %}" class="img-fluid float-left" alt="Responsive image" width="70%">
+    </div>
+    <div class="col-10">
+        
+        <div class="row">
+            <div class="col-10">
+                <p class="h1 text-center text-light mr-2">Расчет стоимости заказа на</p>
+            </div>
+            <div class="col-2">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+            </div>
+            <div class="col-1">
+                <input class="mr-5 bg-secondary text-light form-control form-control-lg text-center" name="guests" type="number" value="50" min="0" style ="width: 5em" oninput="totalIt()" />
+            </div>
+            <div class="col-2">
+               <p class="h1 text-center text-light ml-2">гостей</p>
+            </div>
+            <div class="col-5">
+            </div>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+
+<!--	<div class="container-fluid bg-secondary pb-3 pt-3">
+    <img src="{% static 'img/food.png' %}" class="rounded float-left" alt="Responsive image" weight="22%" height="22%">
+		<p class="h1 text-center text-light mr-5">Расчет стоимости заказа</p>
+		<p class="h1 text-center text-light mr-5">на <input class="bg-secondary text-light form-control form-control-lg text-center" name="guests" type="number" value="50" min="0" style ="width: 5em" oninput="totalIt()" /> гостей. </p>
+	</div>-->
+
+
+
+
+
+		<table class="table table-hover text-center">
+		  <thead class="thead-dark">
+			<tr>
+			  <th scope="col" class="align-middle">Номер</th>
+			  <th scope="col" class="align-middle" style ="width: 15%">Название</th>
+			  <th scope="col" class="align-middle" style ="width: 25%" >Состав</th>
+			  <th scope="col" class="align-middle">Цена <br />грн.</th>
+			  <th scope="col" class="align-middle">Заказ <br />грамм/1чел</th>
+			  <th scope="col" class="align-middle">Заказ грамм</th>
+			  <th scope="col" class="align-middle">Стоимость <br /> заказа</th>
+			</tr>
+		  </thead>
+		  <tbody>
+
+		  	{% for rubric in all_rubrics_list %}
+		  	 	<tr class="thead-light">
+			  	<th scope="col" class="align-middle" colspan="7">	{{ rubric.name }}</th>
+				</tr>
+				
+				{% for product in all_products_list %}
+
+				{% if rubric.name == product.rubric.name %}
+				{{ rubric.name }} = {{ product.name }}
+				{% endif %}
+
+				{% endfor %}
+		
+
+
+			
+			{% endfor %}
+           
+		  	{% for product in all_products_list %}
+		  	{{ product.rubric.name }}
+			<tr>
+			  <th scope="row">
+				  <input name="product" value="{{ product.total_price }}" type="checkbox" oninput="totalIt()" />
+				  {{ forloop.counter }}
+				</th>
+			  <td>{{ product.name }}</td>
+			  <td>{{ product.composition }}</td>
+
+			  <td name="price">
+				  {{ product.price }}
+			  </td>
+			  <td><input type="number" name="grams_per_person" min="0" value="{{ product.grams_per_person }}" style="width:70px" oninput="totalIt()"></td>
+			  <td name="weight" > {{ product.weight }}
+			  </td>
+			  <td name="total_price">
+				  {{ product.total_price }}
+			  </td>
+			</tr>
+			{% endfor %}
+            <tr class="thead-light">
+			  <th scope="col" class="align-middle" colspan="7">Напої</th>
+			</tr>
+		  </tbody>
+		</table>
+	
+	<div class="container-fluid pb-3 pt-3">
+		<div class="row">
+			<div class="col-2">
+				<a href="/admin/exsel/product/" role="button" class="btn btn-outline-danger btn-lg">Админ-панель</a>
+			</div>
+			<div class="col-8">
+
+			</div>
+			<div class="col-2">
+				<button type="button" class="btn btn-outline-dark btn-lg" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Добавить заказ</button>
+			</div>
+		</div>
+		<div class="collapse pb-3 pt-3" id="collapseExample">
+					<form action="" method="post">{% csrf_token %}
+						<table class="table table-sm text-center">
+							<thead class="thead-light">
+								<tr>
+									<th scope="col" class="align-middle">Название</th>
+									<th scope="col" class="align-middle" >Состав</th>
+									<th scope="col" class="align-middle">Цена <br />грн.</th>
+									<th scope="col" class="align-middle">Заказ <br />грамм/1чел</th>
+									<th scope="col" class="align-middle">Заказ грамм</th>
+									<th scope="col" class="align-middle">Категория</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>{{ form.name}}</td>
+									<td>{{ form.composition}}</td>
+								
+									<td>{{ form.price }}</td>
+									<td>{{ form.grams_per_person}}</td>
+									<td>
+										{{ form.weight}}
+									</td>
+									<td>
+										{{ form.rubric}}
+									</td>
+								</tr>
+								<tr>
+						
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td><br/><button class="btn btn-primary btn-lg" type="submit">Опубликовать</button></td>
+								</tr>
+							</tbody>
+						</table>
+					</form>
+		</div>
+	</div>
+
+	<div class="alert alert-dark" role="alert">
+	<h2><p id="simple" align="center">ИТОГО: <b>0.00</b> грн.</p></h2>
+    <h2><p id="sum" align="center">Стоимость банкета / 1 чел.: <b>0.00</b> грн.</p></h2>
+    <h2><p id="total_grams" align="center">Всего <b> 0 </b> грам. на 1 человека</p></h2>
+	</div>
+
+	<script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script> 
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+	<script>
+	function totalIt() {
+	var weight = document.getElementsByName("weight");
+	var price = document.getElementsByName("price");
+	var input = document.getElementsByName("product");
+    var grams_people = document.getElementsByName("grams_per_person");
+    var guests = document.getElementsByName("guests")
+
+	var total_grams = 0; 
+	var total_price = 0;
+
+    guests = parseInt(guests[0].value);
+	  
+	  for (var i = 0; i < {{ all_products_list|length }}; i++) {
+
+      var grams = guests * parseFloat(grams_people[i].value);
+      
+      weight[i].innerHTML = grams.toFixed(2);
+
+		  var total_1 = parseFloat(weight[i].innerText);
+		  var total_2 = parseFloat(price[i].innerText);
+		  var total = (total_1 * total_2) / 100;
+		  //грами на 1 людину
+		  var grams_person = parseFloat(grams_people[i].value);
+
+		  if (input[i].checked) {
+		  total_price += total;
+		  total_grams += grams_person;
+		}
+		  
+		  document.getElementsByName("total_price")[i].innerHTML = total.toFixed(2);
+		}
+		document.getElementById("total_grams").innerHTML = "Всего <b>" + total_grams.toFixed(2) + "</b> грам. на 1 человека";
+	  document.getElementById("sum").innerHTML = "Стоимость банкета / 1 чел.: <b>" + (total_price / guests).toFixed(2) + "</b> грн.";
+	  document.getElementById("simple").innerHTML = "ИТОГО: <b>" + total_price.toFixed(2) + "</b> грн.";
+	}
+	</script>
+
+</body>
+</html>
